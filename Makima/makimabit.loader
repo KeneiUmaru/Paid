@@ -1,0 +1,25 @@
+-- getgenv().Key = ""
+
+repeat task.wait(1) until game:IsLoaded()
+
+    if not getgenv().Key then
+        repeat task.wait() until getgenv().Key
+    end
+    
+    local request = http_request or request or HttpPost or syn.request
+    local hwid = game:GetService("RbxAnalyticsService"):GetClientId()
+    local Payload = game:GetService("HttpService"):JSONEncode({key = getgenv().Key, hwid = hwid, type = 0})
+    local response = request({
+        Url = "https://bot-test-tawan.herokuapp.com/api/v1/",
+        Method = "POST",
+        Headers = {
+            ["Content-Type"] = "application/json"
+        },
+     Body = Payload
+    })
+    local j = game:GetService("HttpService"):JSONDecode(response.Body)
+    if j["success"] then
+        print('Pass')
+        else
+            game.Players.LocalPlayer:Kick(j["message"])
+    end
